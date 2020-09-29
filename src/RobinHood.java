@@ -1,5 +1,12 @@
 import util.RobinHoodHashSet;
 
+/**
+ * This is a test program for the RobinHoodHashSet. It performs some common
+ * operations on the set, but is not an exhaustive test. See RobinHoodHashSetTest
+ * for more testing. 
+ * 
+ * @author Ken Loomis (https://github.com/kjloomis3)
+ */
 public class RobinHood {
 
 	public static void main(String[] args) 
@@ -44,6 +51,7 @@ public class RobinHood {
 			}
 			System.out.println ( table );
 		}
+		
 	}
 	
 }

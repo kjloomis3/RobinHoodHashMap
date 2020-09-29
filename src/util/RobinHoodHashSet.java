@@ -82,6 +82,15 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 	public boolean isEmpty() {
 		return size == 0;
 	}
+	
+	/**
+	 * Returns true if this set is at capacity and cannot accept any new
+	 * elements.
+	 * @return true if the set is full: boolean
+	 */
+	public boolean isFull() {
+		return size == array.size();
+	}
 
 	@Override
 	public boolean contains(Object object) 
@@ -111,7 +120,7 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 		int i=0;
 		for ( E element: this )
 		{
-			objects[i] = element;
+			objects[i++] = element;
 		}
 		return objects;
 	}
@@ -128,7 +137,7 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 		int i=0;
 		for ( E element: this )
 		{
-			a[i] = (T) element;
+			a[i++] = (T) element;
 		}
 		return a;
 	}
@@ -250,14 +259,15 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 	public String toString() 
 	{
 		StringBuilder s = new StringBuilder("RobinHoodHash:[" );
-		for (int i=0; i<array.size(); i++)
+		int i=0;
+		for (E element: this)
 		{
 			if ( i > 0 )
-				s.append( ", " );
-			if ( !array.get( i ).empty )
 			{
-				s.append( array.get( i ) );
+				s.append( ", " );
 			}
+			i++;
+			s.append( element.toString() );
 		}
 		s.append( "]" );
 		return  s.toString();
@@ -301,9 +311,12 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 
 		private int index;
 		
+		/**
+		 *  Creates an iterator for a RobinHoodHashSet
+		 */
 		SetIterator(  )
 		{
-			for (int i=0; i<array.size() && array.get(i).empty; i++);
+			for (index=0; index<array.size() && array.get(index).empty; index++);
 		}
 		
 		@Override
@@ -313,8 +326,10 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 
 		@Override
 		public E next() {
+			if ( index < 0 || index>= array.size())
+				throw new IndexOutOfBoundsException();
 			E element = array.get(index).data;
-			for (int i=0; i<array.size() && array.get(i).empty; i++);
+			for (index++; index<array.size() && array.get(index).empty; index++);
 			return element;
 		}
 	

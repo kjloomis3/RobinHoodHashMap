@@ -3,7 +3,6 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Before;
@@ -21,11 +20,14 @@ public class RobinHoodHashSetTest {
 	private RobinHoodHashSet<String> set1;
 	private RobinHoodHashSet<String> set5;
 	private RobinHoodHashSet<String> setd;
+	private RobinHoodHashSet<String> setfilled5;
 	
-	private static final String [] list = { "AB", "AA", "BA", "CA", "LM", 
+	private static final String [] array = { "AB", "AA", "BA", "CA", "LM", 
 			 												  "MN", "NM", "KJ", "PO", "RL",
 			 												  "RN", "EM", "ZA", "TO", "WL",
 															  "OL", "XY", "ZY", "YZ",  "ZZ"};
+	
+	private static ArrayList<String> list;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -35,6 +37,20 @@ public class RobinHoodHashSetTest {
 		set1 = new RobinHoodHashSet<String> ( 1 );
 		set5 = new RobinHoodHashSet<String> ( 5 );
 		setd = new RobinHoodHashSet<String> (  );
+		setfilled5 = new RobinHoodHashSet<String> (  );
+		
+		list = new ArrayList<String>(array.length);
+		
+		if ( list.size() == 0) {
+			for ( int i=0; i<array.length;i++)
+				list.add(array[i]);
+		}
+		
+		if ( setfilled5.size() < 5 )
+		{
+			for ( int i=0; i<5;i++)
+				setfilled5.add(array[i]);
+		}
 	}
 
 	/**
@@ -72,10 +88,11 @@ public class RobinHoodHashSetTest {
 		assertEquals(0, set5.size());
 		assertEquals(0, setd.size());
 		
-		for ( int i=0; i<list.length; i++)
+		int i=1;
+		for ( String s: list )
 		{
-				assertTrue( setd.add( list[ i ] ) );
-				assertEquals(i+1, setd.size() );
+				assertTrue( setd.add( s ) );
+				assertEquals(i++, setd.size() );
 		}
 		
 	}
@@ -88,7 +105,7 @@ public class RobinHoodHashSetTest {
 		assertTrue( set1.isEmpty() );
 		assertTrue( set5.isEmpty() );
 		assertTrue( setd.isEmpty() );
-		assertTrue( setd.add( list[ 0 ] ) );
+		assertTrue( setd.add( list.get(0)) );
 		assertFalse( setd.isEmpty() );
 		
 	}
@@ -99,14 +116,13 @@ public class RobinHoodHashSetTest {
 	@Test
 	public void testContains() {
 		assertFalse( setd.contains("Not there") );
-		//for ( int i=0; i<list.length; i++)
-		for ( int i=0; i<list.length; i++)
+		for ( int i=0; i<list.size(); i++)
 		{
-				if  ( setd.add( list [ i ] ) )
+				if  ( setd.add( list .get(i) ))
 				{
-					assertTrue( setd.contains( list [ i ] ) );
+					assertTrue( setd.contains( list .get(i)  ));
 					for ( int j=0; j<i; j++)
-						assertTrue( setd.contains( list [ j ] ) );
+						assertTrue( setd.contains( list .get(j) ));
 				}
 				
 		}
@@ -119,7 +135,13 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testIterator() {
-		fail("Not yet implemented");
+		int i=0;
+		for  (String s: setd )
+		{
+			i++;
+			assertTrue(setd.contains(s));
+		}
+		assertEquals(setd.size(), i);
 	}
 
 	/**
@@ -127,7 +149,20 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testToArray() {
-		fail("Not yet implemented");
+		assertTrue(  setd.addAll(list) );
+		String[] test = new String[setd.size()];
+		int i=0;
+		for ( String s: setd)
+		{
+			test[i++]=s;
+		}
+		Object[] actual = setd.toArray();
+		for (i=0;i<actual.length;i++)
+		{
+			assertFalse( actual[i] == null );
+			assertEquals( test [ i ], actual [ i ] );
+			assertTrue( setd.contains( actual[i].toString() ) );
+		}
 	}
 
 	/**
@@ -135,7 +170,21 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testToArrayTArray() {
-		fail("Not yet implemented");
+		assertTrue(  setd.addAll(list) );
+		String[] test = new String[setd.size()];
+		int i=0;
+		for ( String s: setd)
+		{
+			test[i++]=s;
+		}
+		Object[] actual = new Object[5];
+		actual = setd.toArray(actual);
+		for (i=0;i<actual.length;i++)
+		{
+			assertFalse( actual[i] == null );
+			assertEquals( test [ i ], actual [ i ] );
+			assertTrue( setd.contains( actual[i].toString() ) );
+		}
 	}
 
 	/**
@@ -144,25 +193,25 @@ public class RobinHoodHashSetTest {
 	@Test
 	public void testAdd() {
 		assertFalse( setd.add(null ) );
-		for ( int i=0; i<list.length; i++)
+		for ( int i=0; i<list.size(); i++)
 		{
 			if ( i<1)
 			{
-				assertTrue( set1.add( list[ i ] ) );
-				assertTrue( set5.add( list[ i ] ) );
-				assertTrue( setd.add( list[ i ] ) );
+				assertTrue( set1.add( list.get(i) ) );
+				assertTrue( set5.add( list.get(i) ) );
+				assertTrue( setd.add( list.get(i) ) );
 			}
 			else if (i<5)
 			{
-				assertFalse( set1.add( list[ i ] ) );
-				assertTrue( set5.add( list[ i ] ) );
-				assertTrue( setd.add( list[ i ] ) );				
+				assertFalse( set1.add( list.get(i) ) );
+				assertTrue( set5.add( list.get(i) ) );
+				assertTrue( setd.add( list.get(i) ) );				
 			}
 			else
 			{
-				assertFalse( set1.add( list[ i ] ) );
-				assertFalse( set5.add( list[ i ] ) );
-				assertTrue( setd.add( list[ i ] ) );	
+				assertFalse( set1.add( list.get(i) ) );
+				assertFalse( set5.add( list.get(i) ) );
+				assertTrue( setd.add( list.get(i) ) );	
 			}
 		}
 		assertFalse( setd.add("Too Many") );
@@ -175,11 +224,11 @@ public class RobinHoodHashSetTest {
 	public void testRemove() 
 	{
 		assertFalse( setd.remove("Not there") );
-		for ( int i=0; i<list.length; i++)
-				setd.add( list [ i ] );
+		for (String s: list)
+				setd.add( s);
 		assertFalse( setd.remove("Not there") );
-		for ( int i=0; i<list.length; i++)
-			setd.remove( list [ i ] );
+		for (String s: list)
+			setd.remove( s);
 		assertFalse( setd.remove(null) );
 	}
 
@@ -189,15 +238,13 @@ public class RobinHoodHashSetTest {
 	@Test
 	public void testContainsAll() {
 		
-		ArrayList<String> collection = new ArrayList<String>();
-		Collections.addAll( collection, list );
-		
-		for ( int i=0; i<list.length; i++)
+		for ( String s: list)
 		{
-			assertFalse(setd.containsAll(collection));
-			setd.add( list [ i ] );
+			assertFalse(setd.containsAll(list));
+			setd.add( s );
 		}
-		assertTrue( setd.containsAll(collection) );
+		assertTrue( setd.containsAll(list) );
+		assertTrue( setd.containsAll(setfilled5) );
 	}
 
 	/**
@@ -205,11 +252,9 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testAddAll() {
-		ArrayList<String> collection = new ArrayList<String>();
-		Collections.addAll( collection, list );
-		
-		assertTrue(  setd.addAll(collection) );
-		assertTrue( setd.containsAll(collection) );
+		assertFalse( setd.containsAll(list) );
+		assertTrue(  setd.addAll(list) );
+		assertTrue( setd.containsAll(list) );
 	}
 
 	/**
@@ -217,7 +262,12 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testRetainAll() {
-		fail("Not yet implemented");
+		assertTrue(  setd.addAll(list) );
+		assertTrue ( setd.retainAll(list) );
+		assertTrue( setd.containsAll(list) );
+		assertTrue ( setd.retainAll(setfilled5));
+		assertTrue( setd.containsAll(setfilled5) );
+		assertEquals( 5, setd.size() );
 	}
 
 	/**
@@ -225,7 +275,13 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testRemoveAll() {
-		fail("Not yet implemented");
+		assertTrue( setd.addAll(list) );
+		assertTrue( setd.containsAll(list) );
+		assertTrue ( setd.removeAll(list) );
+		assertTrue ( setd.isEmpty() );
+		assertTrue( setd.addAll(list) );
+		assertTrue ( setd.removeAll(setfilled5) );
+		assertEquals ( 15, setd.size() );
 	}
 
 	/**
@@ -233,11 +289,9 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testClear() {
-		ArrayList<String> collection = new ArrayList<String>();
-		Collections.addAll( collection, list );
 		
-		assertTrue(  setd.addAll(collection) );
-		assertEquals( list.length, setd.size() );
+		assertTrue(  setd.addAll(list) );
+		assertEquals( list.size(), setd.size() );
 		setd.clear();
 		assertEquals(0, setd.size() );
 	}
@@ -247,11 +301,11 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testToString() {
-		assertEquals ( "RobinHoodHash:[--]", set1.toString() );
-		for ( int i=0; i<list.length; i++)
+		assertEquals ( "RobinHoodHash:[]", set1.toString() );
+		for ( int i=0; i<list.size(); i++)
 		{
-			assertTrue( setd.add( list[ i ] ) );
-			assertTrue( setd.toString().contains( list[i] ));
+			assertTrue( setd.add( list.get(i) ) );
+			assertTrue( setd.toString().contains( list.get(i) ));
 		}
 	}
 
