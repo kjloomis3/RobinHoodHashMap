@@ -111,6 +111,19 @@ public class RobinHoodHashSetTest {
 	}
 
 	/**
+	 * Test method for {@link util.RobinHoodHashSet#isFull()}.
+	 */
+	@Test
+	public void testIsFull() {
+		assertFalse( set1.isFull() );
+		assertFalse( set5.isFull() );
+		assertFalse( setd.isFull() );
+		assertTrue( set1.add( list.get(0)) );
+		assertTrue( set1.isFull() );
+		
+	}
+	
+	/**
 	 * Test method for {@link util.RobinHoodHashSet#contains(java.lang.Object)}.
 	 */
 	@Test
@@ -301,7 +314,7 @@ public class RobinHoodHashSetTest {
 	 */
 	@Test
 	public void testToString() {
-		assertEquals ( "RobinHoodHash:[]", set1.toString() );
+		assertEquals ( "RobinHoodHashSet:[]", set1.toString() );
 		for ( int i=0; i<list.size(); i++)
 		{
 			assertTrue( setd.add( list.get(i) ) );

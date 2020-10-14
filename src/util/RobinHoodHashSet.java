@@ -21,7 +21,6 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 	
 	/** The underlying structure of this HashSet (Each slot should be instantiated before use) **/
 	private ArrayList<Slot> array;
-	//private Slot[] array;
 	
 	/** The number of elements in the set **/
 	private int size = 0;
@@ -186,7 +185,7 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 				while(!array.get(j).empty && array.get(j).distance > 0)
 				{
 					array.get(i).data = array.get(j).data;
-					array.get(i).distance++;
+					array.get(i).distance = array.get(j).distance -1;
 					i=j;
 					j=getIndex(i, 1);
 				}
@@ -258,7 +257,7 @@ public class RobinHoodHashSet<E> implements Set<E>, Iterable<E> {
 	@Override
 	public String toString() 
 	{
-		StringBuilder s = new StringBuilder("RobinHoodHash:[" );
+		StringBuilder s = new StringBuilder("RobinHoodHashSet:[" );
 		int i=0;
 		for (E element: this)
 		{
