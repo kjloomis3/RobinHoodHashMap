@@ -450,11 +450,14 @@ public class RobinHoodHashMap<K, E> implements Map<K, E> {
 
 		@Override
 		public boolean retainAll(Collection<?> c) {
+			ArrayList<Object> removeList = new ArrayList<Object>(this.size()); 
 			for ( Object key: this )
-			{
 				if ( !c.contains( key ) )
-					RobinHoodHashMap.this.remove(key);
-			}
+					removeList.add( key );
+			
+			for ( Object key: removeList )
+				RobinHoodHashMap.this.remove(key);
+			
 			return true;
 		}
 
@@ -464,7 +467,7 @@ public class RobinHoodHashMap<K, E> implements Map<K, E> {
 			{
 				RobinHoodHashMap.this.remove(key);
 			}
-			return false;
+			return true;
 		}
 
 		@Override
