@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 import org.junit.Before;
@@ -99,16 +100,16 @@ public class RobinHoodHashMapTest {
 		assertEquals(0, map5.size());
 		assertEquals(0, mapd.size());
 		
-		int i=1;
+		int i=0;
 		for ( String s: list )
 		{
 				mapd.put( s, i );
-				assertEquals(i++, mapd.size() );
+				assertEquals(++i, mapd.size() );
 		}
 		for ( String s: list )
 		{
 				mapd.remove( s );
-				assertEquals(i--, mapd.size() );
+				assertEquals(--i, mapd.size() );
 		}
 		
 	}
@@ -253,10 +254,26 @@ public class RobinHoodHashMapTest {
 		}
 		for ( String key: mapfilled5.keySet()) {
 			assertTrue( mapd.containsKey(key));
-			assertEquals( mapfilled5.get(key), mapd.containsKey(key));
+			assertEquals( mapfilled5.get(key), mapd.get(key));
 		}
 	}
 
+	@Test
+	public void testClear() {
+		assertTrue( map5.isEmpty() );
+		map5.clear();
+		assertTrue( map5.isEmpty() );
+		map5.put("Key", 0);
+		assertFalse( map5.isEmpty() );
+		map5.clear();
+		assertTrue( map5.isEmpty() );
+		
+		assertFalse( mapfilled5.isEmpty() );
+		mapfilled5.clear();
+		assertTrue( mapd.isEmpty() );
+	}
+
+	
 	/**
 	 * Tests that the key set contains all the keys that have been
 	 * inserted into the map. Also test the isEmpty and size methods
@@ -277,27 +294,6 @@ public class RobinHoodHashMapTest {
 			assertTrue ( keySet.contains(array[i]) );
 		}
 		
-	}
-
-	/**
-	 * Tests that the key set contains all the keys that have been
-	 * inserted into the map and can correctly be converted to 
-	 * an an array.
-	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
-	 */
-	@Test
-	public void testKeySetToArray() {
-
-		Object[] test = map1.keySet().toArray();
-		assertEquals ( 0, test.length );
-		
-		test = mapfilled5.keySet().toArray();
-		assertEquals ( 5, test.length );
-		for ( int i=0; i<test.length; i++ )
-		{
-			assertTrue ( mapfilled5.containsKey( test[i]) );
-		}
-
 	}
 	
 	/**
@@ -438,6 +434,27 @@ public class RobinHoodHashMapTest {
 	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
 	 */
 	@Test
+	public void testKeySetToArray() {
+
+		Object[] test = map1.keySet().toArray();
+		assertEquals ( 0, test.length );
+		
+		test = mapfilled5.keySet().toArray();
+		assertEquals ( 5, test.length );
+		for ( int i=0; i<test.length; i++ )
+		{
+			assertTrue ( mapfilled5.containsKey( test[i]) );
+		}
+
+	}
+	
+	/**
+	 * Tests that the key set contains all the keys that have been
+	 * inserted into the map and can correctly be converted to 
+	 * an an array.
+	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
+	 */
+	@Test
 	public void testKeySetToTArray() {
 		Object[]  test = new String[ 10 ];
 		test = mapfilled5.keySet().toArray(test);
@@ -470,23 +487,113 @@ public class RobinHoodHashMapTest {
 	 */
 	@Test
 	public void testValues() {
-		fail("Not yet implemented");
+		assertEquals ( 0, map1.values().size() );
+		assertTrue ( map1.values().isEmpty() );
+		
+		Collection<Integer> valueSet = mapfilled5.values();
+		assertFalse( valueSet.isEmpty() );
+		assertEquals ( mapfilled5.size(), valueSet.size() );
+		for ( int i=0; i<5;i++)
+		{
+			assertTrue ( valueSet.contains( i ));
+		}
 	}
 
+	/**
+	 * Tests that the key set doesn't allow for misuse of the 
+	 * key set. Test that keys cannot be added to the key set
+	 * without using the put method for the underlying map.
+	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
+	 */
+	@Test
+	public void testValuesBadUsage() {
+		
+		ArrayList<Integer> badList = new ArrayList<Integer>(3);
+		badList.add( 0 );
+		Integer bad = 0;
+		
+		assertFalse ( mapfilled5.values().add( bad ) );
+		assertFalse ( mapfilled5.values().addAll( badList  ) );
+		assertFalse ( mapfilled5.values().retainAll( badList  ) );
+		assertFalse ( mapfilled5.values().remove( bad  ) );
+		assertFalse ( mapfilled5.values().removeAll( badList  ) );
+		mapfilled5.values().clear();
+		assertFalse ( mapfilled5.values().isEmpty() );
+		
+	}
+	
+	/**
+	 * Tests that the value collection correctly returns true if it contains 
+	 * all the values in the given collection.
+	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
+	 */
+	@Test
+	public void testValuesContainsAll() {
+		
+		ArrayList<Integer> valueList = new ArrayList<Integer>(array.length);
+		
+		for ( int i = 0; i < array.length; i++ )
+		{
+			mapd.put ( array[i], i );
+			valueList.add( i );
+		}
+		
+		Collection<Integer> values = mapd.values();
+		
+		assertTrue ( values.containsAll( valueList ) );
+		
+		assertEquals ( mapd.size(), values.size() );
+		assertTrue ( values.containsAll( valueList ) );
+		mapd.remove ( array[3] );
+		assertFalse ( values.containsAll( valueList ) );
+		
+		values = map1.values();
+		assertEquals ( map1.size(), values.size() );
+		assertFalse ( values.containsAll( valueList) );
+	}
+	
+	
+	/**
+	 * Tests that the value collection contains all the values that have been
+	 * inserted into the map and can correctly be converted to 
+	 * an an array.
+	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
+	 */
+	@Test
+	public void testValuesToArray() {
+
+		Object[] test = map1.values().toArray();
+		assertEquals ( 0, test.length );
+		
+		test = mapfilled5.values().toArray();
+		assertEquals ( 5, test.length );
+		for ( int i=0; i<test.length; i++ )
+		{
+			assertTrue ( mapfilled5.containsValue( test[i]) );
+		}
+
+	}
+	
+	/**
+	 * Tests that the key set contains all the keys that have been
+	 * inserted into the map and can correctly be converted to 
+	 * an an array.
+	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
+	 */
+	@Test
+	public void testValuesToTArray() {
+		Object[]  test = new Integer[ 10 ];
+		test = mapfilled5.values().toArray(test);
+		for ( int i=0; i<test.length && test[i] != null; i++ )
+		{
+			assertTrue ( mapfilled5.containsValue( test[i]) );
+		}
+	}
+	
+	
 	@Test
 	public void testEntrySet() {
 		fail("Not yet implemented");
 	}
-
-	@Test
-	public void testClear() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testToString() {
-		fail("Not yet implemented");
-	}
-
 	
 }

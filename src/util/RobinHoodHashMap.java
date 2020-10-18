@@ -578,7 +578,7 @@ public class RobinHoodHashMap<K, E> implements Map<K, E> {
 		public boolean containsAll(Collection<?> c) {
 			for ( Object value: c )
 			{
-				if ( !RobinHoodHashMap.this.containsKey(value) )
+				if ( !RobinHoodHashMap.this.containsValue(value) )
 					return false;
 			}
 			return true;
