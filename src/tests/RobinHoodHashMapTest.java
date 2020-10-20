@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Before;
@@ -593,7 +594,32 @@ public class RobinHoodHashMapTest {
 	
 	@Test
 	public void testEntrySet() {
-		fail("Not yet implemented");
+		assertEquals ( 0, map1.entrySet().size() );
+		assertTrue ( map1.entrySet().isEmpty() );
+		
+		Set<Entry<String, Integer>> entrySet = mapfilled5.entrySet();
+		assertFalse( entrySet.isEmpty() );
+		assertEquals ( mapfilled5.size(), entrySet.size() );
+	}
+	
+	/**
+	 * Tests that the key set doesn't allow for misuse of the 
+	 * key set. Test that keys cannot be added to the key set
+	 * without using the put method for the underlying map.
+	 * Test method for {@link util.RobinHoodHashMap#keySet()}.
+	 */
+	@Test
+	public void testEntrySetBadUsage() {
+	
+		
+		assertFalse ( mapfilled5.entrySet().add( null ) );
+		assertFalse ( mapfilled5.entrySet().addAll( null  ) );
+		assertFalse ( mapfilled5.entrySet().retainAll( null  ) );
+		assertFalse ( mapfilled5.entrySet().remove( null  ) );
+		assertFalse ( mapfilled5.entrySet().removeAll( null  ) );
+		mapfilled5.entrySet().clear();
+		assertFalse ( mapfilled5.entrySet().isEmpty() );
+		
 	}
 	
 }
